@@ -1,73 +1,83 @@
 # fGAN-Precision-Recall-Tuning
 
-[cite_start]This repository contains the implementation and analysis of **f-divergence-based Generative Adversarial Networks (f-GANs)** to investigate and improve the inherent trade-off between **Precision (fidelity)** and **Recall (diversity)** in generated images[cite: 9, 11].
+This repository contains the implementation and analysis of **f-divergence-based Generative Adversarial Networks (f-GANs)** to investigate and improve the inherent trade-off between **Precision (fidelity)** and **Recall (diversity)** in generated images [9, 11].
 
-[cite_start]The project explores how different training objectives (f-divergences) and post-processing techniques (Soft Truncation and Discriminator Rejection Sampling) jointly shape the generative performance on the **MNIST** dataset[cite: 16, 229].
+The project explores how different training objectives (f-divergences) and post-processing techniques (Soft Truncation and Discriminator Rejection Sampling) jointly shape the generative performance on the **MNIST** dataset [16, 229].
+
+---
 
 ## Key Objectives and Findings
 
 The core focus of this work is to provide a clearer understanding of how to control GAN behavior:
 
-* **Training Objectives:** We systematically compare the performance of GANs trained with different f-divergences:
-    * [cite_start]**Jensen-Shannon (JS) Divergence (Classical GAN):** Tends to balance precision and recall[cite: 41].
-    * [cite_start]**Kullback-Leibler (KL) Divergence:** Promotes broader coverage (higher **Recall**) by penalizing missing modes, though it can be unstable[cite: 47, 48].
-    * [cite_start]**Reverse KL (RKL) Divergence:** Favors realism (higher **Precision**) but is prone to mode collapse[cite: 52, 53].
-    * [cite_start]**Binary Cross-Entropy (BCE) / Vanilla GAN:** Used as the baseline[cite: 64].
-* [cite_start]**Evaluation:** Performance is assessed using custom **Precision/Recall (PR) curves** [cite: 14, 22, 24] [cite_start]and the **Fréchet Inception Distance (FID)**, all computed in a feature space derived from a custom-trained CNN classifier on MNIST[cite: 20, 27, 28].
-* **Post-Processing Techniques:**
-    * [cite_start]**Soft Truncation:** A simple post-training technique to tune the quality/diversity trade-off by varying the variance of the latent space sampling ($\sigma$)[cite: 133, 134].
-    * [cite_start]**Discriminator Rejection Sampling (DRS):** A post-hoc filtering method that uses the discriminator's score to selectively accept high-fidelity generated samples, significantly enhancing overall precision without retraining[cite: 15, 192].
-* [cite_start]**Best Performance:** The **KL-based generator combined with DRS** achieved the best overall results (FID $\approx 24$) and a strong balance between precision and recall, confirming the robustness of post-hoc filtering[cite: 215, 233].
+### **Training Objectives**
+We systematically compare the performance of GANs trained with different f-divergences:
+
+- **Jensen-Shannon (JS) Divergence – Classical GAN:** Tends to balance precision and recall [41].
+- **Kullback-Leibler (KL) Divergence:** Promotes broader coverage (higher *Recall*) by penalizing missing modes, though it can be unstable [47, 48].
+- **Reverse KL (RKL) Divergence:** Favors realism (higher *Precision*) but is prone to mode collapse [52, 53].
+- **Binary Cross-Entropy (BCE) – Vanilla GAN:** Used as the baseline [64].
+
+### **Evaluation**
+Performance is assessed using custom **Precision/Recall curves** [14, 22, 24] and **Fréchet Inception Distance (FID)**, computed in a feature space derived from a custom-trained CNN classifier on MNIST [20, 27, 28].
+
+### **Post-Processing Techniques**
+- **Soft Truncation:** A simple technique to tune the quality/diversity trade-off by varying the variance of the latent sampling (σ) [133, 134].
+- **Discriminator Rejection Sampling (DRS):** A post-hoc filtering method using the discriminator’s score to accept only high-fidelity samples, boosting precision without retraining [15, 192].
+
+### **Best Performance**
+The **KL-based generator combined with DRS** achieved the best overall results (FID ≈ 24) and a strong precision–recall balance [215, 233].
 
 ---
 
 ## Repository Structure
 
-The project is organized into modular scripts and directories for training, evaluation, and storage of results.
+The project is organized into modular directories for training, evaluation, and result storage.
 
-
+```txt
 GAN-LATENT-SPACE-TUNING/
 ├── checkpoints/
-│   ├── BCE_D.pth, BCE_G.pth         # Trained Discriminator (D) and Generator (G) for BCE loss
-│   ├── JS_D.pth, JS_G.pth           # Trained D and G for JS loss
-│   ├── KL_D.pth, KL_G.pth           # Trained D and G for KL loss
-│   ├── RKL_D.pth, RKL_G.pth         # Trained D and G for RKL loss
-│   └── classifier.pth               # Trained CNN feature extractor for metrics
+│   ├── BCE_D.pth, BCE_G.pth           # Trained D/G for BCE loss
+│   ├── JS_D.pth, JS_G.pth             # Trained D/G for JS loss
+│   ├── KL_D.pth, KL_G.pth             # Trained D/G for KL loss
+│   ├── RKL_D.pth, RKL_G.pth           # Trained D/G for RKL loss
+│   └── classifier.pth                 # CNN classifier used for metrics
 │
 ├── docs/
-│   └── slides.pdf                   # Project presentation slides
+│   └── slides.pdf                     # Project slides
 │
-├── drs/                             # Scripts for Discriminator Rejection Sampling implementation
+├── drs/                               # Discriminator Rejection Sampling
 │   ├── drs.py
-│   ├── evaluate_drs.py              # Evaluate models with DRS
-│   ├── generate_drs.py              # Generate samples using DRS
+│   ├── evaluate_drs.py                # Evaluate models with DRS
+│   ├── generate_drs.py                # Generate samples via DRS
 │   └── ...
 │
 ├── histories/
-│   ├── BCE_training_history.pth     # Training metrics (Precision, Recall, FID) for BCE
-│   └── JS/KL/RKL_training_history.pth # Metrics history for f-GANs
+│   ├── BCE_training_history.pth       # BCE PR/FID histories
+│   └── JS-KL-RKL_training_history.pth # f-GAN histories
 │
 ├── notebooks/
-│   └── models_eval.ipynb            # Evaluation, plotting, and analysis notebook
+│   └── models_eval.ipynb              # Evaluation & analysis notebook
 │
 ├── scripts/
-│   ├── generate.sh                  # Script to run image generation
-│   ├── plot_precision_recall.py     # Generate PR curves and trajectories
-│   ├── train_classifier.py          # Train the CNN feature extractor
-│   ├── train_gan.py                 # Main script for f-GAN training
-│   └── train.sh                     # Shell script to launch training jobs
+│   ├── generate.sh                    # Run generation
+│   ├── plot_precision_recall.py       # Plot PR curves & trajectories
+│   ├── train_classifier.py            # Train CNN classifier
+│   ├── train_gan.py                   # f-GAN adversarial training
+│   └── train.sh                       # Launch training jobs
 │
 ├── src/
-│   ├── classifier.py                # Classifier model definition
-│   ├── gan.py                       # Generator (G) and Discriminator (D) models
-│   ├── losses.py                    # f-divergences (KL, RKL) and JS/BCE losses
-│   ├── metrics.py                   # Precision/Recall and FID computation
-│   ├── generate.py                  # Standard generation logic
+│   ├── classifier.py                  # CNN model for feature extraction
+│   ├── gan.py                         # Generator & Discriminator
+│   ├── losses.py                      # f-divergences + JS/BCE
+│   ├── metrics.py                     # Precision/Recall + FID
+│   ├── generate.py                    # Standard sample generation
 │   └── ...
 │
 ├── README.md
-├── report.pdf                       # Full project report
-└── requirements.txt                 # Python dependencies
+├── report.pdf                         # Full project report
+└── requirements.txt                   # Dependencies
+
 
 
 ---
@@ -116,5 +126,3 @@ scripts/train.sh
 
 # Example to run generation (e.g., for plotting)
 scripts/generate.sh
-
-
