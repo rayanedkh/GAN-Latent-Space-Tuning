@@ -78,8 +78,7 @@ GAN-LATENT-SPACE-TUNING/
 ├── report.pdf                         # Full project report
 └── requirements.txt                   # Dependencies
 
-
-
+```
 ---
 
 ## Set Up Your Environment
