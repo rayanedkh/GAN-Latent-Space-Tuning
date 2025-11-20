@@ -118,10 +118,3 @@ To replicate the results or run the code, you'll need to set up the environment 
 * The `train_gan.py` script performs adversarial training for a GAN. Before running, ensure the `DATA` variable in `scripts/train.sh` points to your dataset directory.
     * If you don't use the Juliet cluster (as configured by default), please provide a `data_path` argument for the training scripts or adjust the `DATA` variable.
 * You can adjust hyperparameters like learning rate, number of epochs, and batch size directly in `scripts/train.sh`.
-
-```bash
-# Example to run training
-scripts/train.sh
-
-# Example to run generation (e.g., for plotting)
-scripts/generate.sh
