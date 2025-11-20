@@ -1,32 +1,34 @@
 # fGAN-Precision-Recall-Tuning
 
-This repository contains the implementation and analysis of **f-divergence-based Generative Adversarial Networks (f-GANs)** to investigate and improve the inherent trade-off between **Precision (fidelity)** and **Recall (diversity)** in generated images [9, 11].
+[cite_start]This repository contains the implementation and analysis of **f-divergence-based Generative Adversarial Networks (f-GANs)** [cite: 30] [cite_start]to investigate and improve the inherent trade-off between **Precision (fidelity)** and **Recall (diversity)** [cite: 9] in generated images.
 
-The project explores how different training objectives (f-divergences) and post-processing techniques (Soft Truncation and Discriminator Rejection Sampling) jointly shape the generative performance on the **MNIST** dataset [16, 229].
+[cite_start]The project explores how different training objectives (f-divergences) and post-processing techniques (Soft Truncation [cite: 14] [cite_start]and Discriminator Rejection Sampling [cite: 15][cite_start]) jointly shape the generative performance on the **MNIST** dataset[cite: 20, 228].
 
 ---
 
 ## Key Objectives and Findings
 
-The core focus of this work is to provide a clearer understanding of how to control GAN behavior:
+[cite_start]The core focus of this work is to provide a clearer understanding of how to control GAN behavior[cite: 16].
 
 ### **Training Objectives**
-We systematically compare the performance of GANs trained with different f-divergences:
+[cite_start]We systematically compare the performance of GANs trained with different f-divergences[cite: 31]:
 
-- **Jensen-Shannon (JS) Divergence – Classical GAN:** Tends to balance precision and recall [41].
-- **Kullback-Leibler (KL) Divergence:** Promotes broader coverage (higher *Recall*) by penalizing missing modes, though it can be unstable [47, 48].
-- **Reverse KL (RKL) Divergence:** Favors realism (higher *Precision*) but is prone to mode collapse [52, 53].
-- **Binary Cross-Entropy (BCE) – Vanilla GAN:** Used as the baseline [64].
+- [cite_start]**Jensen-Shannon (JS) Divergence – Classical GAN:** Tends to balance precision and recall[cite: 41].
+- [cite_start]**Kullback-Leibler (KL) Divergence:** Promotes broader coverage (higher *Recall*) by penalizing missing modes [cite: 47][cite_start], though it can be unstable[cite: 48].
+- [cite_start]**Reverse KL (RKL) Divergence:** Favors realism (higher *Precision*) [cite: 52] [cite_start]but is prone to mode collapse[cite: 53].
+- [cite_start]**Binary Cross-Entropy (BCE) – Vanilla GAN:** Used as the baseline.
 
 ### **Evaluation**
-Performance is assessed using custom **Precision/Recall curves** [14, 22, 24] and **Fréchet Inception Distance (FID)**, computed in a feature space derived from a custom-trained CNN classifier on MNIST [20, 27, 28].
+Performance is assessed using:
+- [cite_start]Custom **Precision/Recall curves** [cite: 14, 22, 24] [cite_start]and the **Fréchet Inception Distance (FID)**[cite: 27].
+- [cite_start]Metrics are computed in a feature space derived from a custom-trained CNN classifier on MNIST[cite: 20, 28].
 
 ### **Post-Processing Techniques**
-- **Soft Truncation:** A simple technique to tune the quality/diversity trade-off by varying the variance of the latent sampling (σ) [133, 134].
-- **Discriminator Rejection Sampling (DRS):** A post-hoc filtering method using the discriminator’s score to accept only high-fidelity samples, boosting precision without retraining [15, 192].
+- [cite_start]**Soft Truncation:** A simple technique to tune the quality/diversity trade-off by varying the variance of the latent sampling ($\sigma$)[cite: 133, 134].
+- [cite_start]**Discriminator Rejection Sampling (DRS):** A post-hoc filtering method using the discriminator’s score to accept only high-fidelity samples, boosting precision without retraining[cite: 15, 192]. [cite_start](Introduced by **Azadi et al., 2019** [cite: 236]).
 
 ### **Best Performance**
-The **KL-based generator combined with DRS** achieved the best overall results (FID ≈ 24) and a strong precision–recall balance [215, 233].
+[cite_start]The **KL-based generator combined with DRS** achieved the best overall results (FID $\approx 24$) and a strong precision–recall balance[cite: 214, 232].
 
 ---
 
